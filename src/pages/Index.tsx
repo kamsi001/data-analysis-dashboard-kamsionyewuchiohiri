@@ -50,11 +50,14 @@ const Index = () => {
           
           {/* 📝 WEEK 1: Students customize this title with their name */}
           <h1 className="text-5xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-4">
-            Plug-N-Learn
+            Kamsi's Data Hub
           </h1>
           <p className="text-xl text-slate-600 mb-2">Data Insight Engine</p>
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Upload your dataset and instantly discover insights, visualize trends, and explore your data with interactive charts and analytics.
+          </p>
+          <p className="text-lg text-slate-500 max-w-2xl mx-auto">
+            Built by Kamsi Onyewuchi-Ohiri - Future Software Engineer
           </p>
         </div>
 
