@@ -19,6 +19,8 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import DataUpload from '@/components/DataUpload';
 import Dashboard from '@/components/Dashboard';
 import { DataRow } from '@/types/data';
+// 🆕 WEEK 3: Import NameInput demo
+// import NameInput from '@/components/NameInput';
 
 import UploadProgressSimulator from '@/components/UploadProgressSimulator';
 import InteractivePractice from '@/components/homework/InteractivePractice';
@@ -58,9 +60,16 @@ const Index = () => {
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Upload your dataset and instantly discover insights, visualize trends, and explore your data with interactive charts and analytics.
           </p>
+<<<<<<< HEAD
           <p className="text-lg text-slate-500 max-w-2xl mx-auto">
             Built by Kamsi Onyewuchi-Ohiri - Future Software Engineer
           </p>
+=======
+          {/* 🆕 WEEK 3: Live Event Handling Demo (removed NameInput from homepage) */}
+          {/* <div className="mt-8 mb-8 flex justify-center">
+            <NameInput />
+          </div> */}
+>>>>>>> upstream/main
         </div>
 
         {/* 🔧 WEEK 2: ADD YOUR PROGRESS COMPONENT HERE! */}
