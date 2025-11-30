@@ -9,7 +9,7 @@
 import { useState } from 'react';
 
 // 🎨 Icon imports - beautiful icons for your UI
-import { Upload, BarChart3, PieChart, TrendingUp, Database } from 'lucide-react';
+import { Upload, FileText, BarChart3, Brain, Zap, PieChart, TrendingUp, Database } from 'lucide-react';
 
 // 🧩 UI Component imports - pre-built components for your interface
 import { Button } from "@/components/ui/button";
@@ -20,7 +20,9 @@ import DataUpload from '@/components/DataUpload';
 import Dashboard from '@/components/Dashboard';
 import { DataRow } from '@/types/data';
 
-// 🔧 WEEK 2: Import your UploadProgressSimulator component here
+import UploadProgressSimulator from '@/components/UploadProgressSimulator';
+import InteractivePractice from '@/components/homework/InteractivePractice';
+
 // 🔧 WEEK 3+: Additional imports will be added as you progress
 
 const Index = () => {
@@ -67,6 +69,9 @@ const Index = () => {
         {/* <div className="mb-8">
           <UploadProgressSimulator />
         </div> */}
+        <div className="mb-12 max-w-2xl mx-auto">
+          <InteractivePractice /> {/* <--- ADD THIS BLOCK */}
+        </div>
 
         {data.length === 0 ? (
           <>
@@ -124,6 +129,21 @@ const Index = () => {
                 <DataUpload onDataLoad={handleDataLoad} />
               </CardContent>
             </Card>
+
+            <Card className="bg-white/50 backdrop-blur-sm border-purple-200">
+              <CardHeader>
+                <CardTitle className="flex items-center">
+                  <Upload className="mr-3 h-6 w-6 text-purple-600" />
+                  Interactive Progress Demo
+                </CardTitle>
+                <CardDescription>
+                  Try our upload progress simulator built with React state!
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <UploadProgressSimulator />
+              </CardContent>
+            </Card>
           </>
         ) : (
           <>
@@ -134,6 +154,31 @@ const Index = () => {
           </>
         )}
       </div>
+
+      {/* 👣 Footer Component - Added to the bottom of the page */}
+      <footer className="w-full mt-12 py-6 border-t border-slate-200 bg-white/70 backdrop-blur-sm">
+        <div className="container mx-auto px-4 text-center md:flex md:justify-between md:items-center text-sm text-slate-600">
+          {/* Copyright and Build Info */}
+          <div className="mb-4 md:mb-0">
+            <p className="font-semibold">
+              &copy; {new Date().getFullYear()} Kamsi Onyewuchi-Ohiri. All rights reserved.
+            </p>
+            <p className="text-xs mt-1 flex items-center justify-center md:justify-start">
+              Built with <img src="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" alt="React Logo" className="h-4 w-4 mx-1" /> React
+            </p>
+          </div>
+
+          {/* Social Links (Placeholder) */}
+          <div className="flex justify-center md:justify-end space-x-4">
+            <Button variant="ghost" size="icon" aria-label="LinkedIn">
+              <svg xmlns="https://www.linkedin.com/in/doreenonyewuchiohiri" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-linkedin h-5 w-5 hover:text-blue-700 transition-colors"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect width="4" height="12" x="2" y="9"/><circle cx="4" cy="4" r="2"/></svg>
+            </Button>
+            <Button variant="ghost" size="icon" aria-label="GitHub">
+              <svg xmlns="https://github.com/kamsi001" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-github h-5 w-5 hover:text-gray-900 transition-colors"><path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3.5 0 7.3-1.6 7.3-8.3 0-1.7-.6-3.1-1.6-4.2.7-1.6.7-3.6 0-5.2s-2.9-1.3-4.2 0a12.8 12.8 0 0 0-5.2 0c-1.3 1.3-4.2 1.3-5.2 0s-.7 3.6 0 5.2c-1 1.1-1.6 2.5-1.6 4.2 0 6.7 3.8 8.3 7.3 8.3a4.8 4.8 0 0 0-1 3.5v4"/></svg>
+            </Button>
+          </div>
+        </div>
+      </footer>
     </div>
   );
 };

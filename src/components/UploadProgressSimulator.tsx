@@ -13,12 +13,29 @@ const UploadProgressSimulator = () => {
 
   // 🔄 Event handler functions - what happens when buttons are clicked
   const startUpload = () => {
-    // TODO: Implement upload simulation
-    // HINT: You'll need to use setInterval to animate the progress
+    setIsUploading(true);
+    setProgress(0);
+    
+    // Simulate upload progress with intervals
+    const interval = setInterval(() => {
+      setProgress(prevProgress => {
+        const newProgress = prevProgress + Math.random() * 15 + 5; // Random chunks
+        
+        // Complete upload when we reach 100%
+        if (newProgress >= 100) {
+          clearInterval(interval);
+          setIsUploading(false);
+          return 100;
+        }
+        
+        return newProgress;
+      });
+    }, 300); // Update every 300ms for smooth animation
   };
 
   const resetProgress = () => {
-    // TODO: Reset progress back to 0
+    setProgress(0);
+    setIsUploading(false);
   };
 
   const addProgress = () => {
