@@ -29,6 +29,8 @@ import InteractivePractice from '@/components/homework/InteractivePractice';
 import DataAnalyzer from '@/components/DataAnalyzer';
 import SimpleChart from '@/components/SimpleChart';
 import ErrorBoundary from '@/components/ErrorBoundary';
+import AboutProject from '@/components/AboutProject';
+
 import { Link } from 'react-router-dom';
 
 
@@ -145,6 +147,11 @@ const Index = () => {
                 <DataUpload onDataLoad={handleDataLoad} />
               </CardContent>
             </Card>
+       
+            {/* ℹ️ About This Project Section */}
+            <div className="mb-12 max-w-4xl mx-auto">
+                <AboutProject /> 
+            </div>
 
             <Card className="bg-gray-800/90 backdrop-blur-sm border-1 border-blue-900 shadow-xl mt-12 text-white">
               <CardHeader>
