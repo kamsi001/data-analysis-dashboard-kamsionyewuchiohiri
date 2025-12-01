@@ -5,7 +5,7 @@
 // This is the main dashboard that displays after data is uploaded
 // Students will enhance this component throughout weeks 4-10
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { RefreshCw, Download, BarChart3, PieChart, LineChart, Table, MessageCircle, FileText, Image } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,26 +37,29 @@ const Dashboard = ({ data, fileName, onReset }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('overview');
   
   // 🔧 WEEK 4: Add data processing state here
-  // Example: const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(data);
   
   // 🔧 WEEK 5: Add file handling state here
-  // Example: const [exportFormat, setExportFormat] = useState('csv');
+  const [exportFormat, setExportFormat] = useState('csv');
   
   // 🔧 WEEK 6: Add chart customization state here
-  // Example: const [chartConfig, setChartConfig] = useState({});
+  const [chartConfig, setChartConfig] = useState({});
   
   // 🔧 WEEK 7: Add API integration state here
-  // Example: const [externalData, setExternalData] = useState([]);
+  const [externalData, setExternalData] = useState([]);
   
   // 🔧 WEEK 8: Add personal analytics state here
-  // Example: const [personalInsights, setPersonalInsights] = useState([]);
+  const [personalInsights, setPersonalInsights] = useState([]);
   
   // 🔧 WEEK 9: Add AI insights state here
-  // Example: const [aiGeneratedInsights, setAiGeneratedInsights] = useState([]);
+  const [aiGeneratedInsights, setAiGeneratedInsights] = useState([]);
 
   // 📊 Computed values - these recalculate when data changes
   const summary = useMemo(() => getDataSummary(data), [data]);
   const insights = useMemo(() => generateDataInsights(data), [data]);
+
+  const renderCountRef = useRef(0);
+  renderCountRef.current = renderCountRef.current + 1;
 
   // Enhanced export functionality
   const handleExportCSV = () => {
@@ -134,6 +137,7 @@ ${Object.entries(summary.columnTypes)
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Data Analysis Dashboard</h2>
+          <div className="text-sm text-yellow-300 mt-1">Dashboard Render Count: {renderCountRef.current}</div>
           <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
             <span className="flex items-center gap-1">
               <FileText className="h-4 w-4" />
@@ -164,8 +168,8 @@ ${Object.entries(summary.columnTypes)
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-gradient-to-br from-blue-50 to-blue-100 border-blue-200">
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium text-blue-800">Total Records</CardTitle>
-            <BarChart3 className="h-4 w-4 text-blue-600" />
+            <CardTitle className="text-sm font-medium text-blue-600">Total Records</CardTitle>
+            <BarChart3 className="h-4 w-4 text-blue-800" />
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold text-blue-900">{summary.totalRows.toLocaleString()}</div>
@@ -241,7 +245,7 @@ ${Object.entries(summary.columnTypes)
               <ChartSection data={data} />
             </div>
             <div className="xl:col-span-1">
-              <InsightsPanel insights={insights.slice(0, 6)} />
+              <InsightsPanel data={data} insights={insights.slice(0, 6)} />
             </div>
           </div>
         </TabsContent>
@@ -251,7 +255,7 @@ ${Object.entries(summary.columnTypes)
         </TabsContent>
 
         <TabsContent value="insights">
-          <InsightsPanel insights={insights} showAll />
+          <InsightsPanel data={data} insights={insights} showAll />
         </TabsContent>
 
         <TabsContent value="chat">

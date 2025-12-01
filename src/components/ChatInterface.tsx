@@ -24,7 +24,7 @@ const ChatInterface = ({ data }: ChatInterfaceProps) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // Smart AI response generation based on data context
-  const generateAIResponse = (userMessage: string, dataContext: DataRow[]): string => {
+  {/* const generateAIResponse = (userMessage: string, dataContext: DataRow[]): string => {
     const lowerMessage = userMessage.toLowerCase();
     const summary = getDataSummary(dataContext);
     const insights = generateDataInsights(dataContext);
@@ -169,38 +169,67 @@ Which columns are you most interested in analyzing?`;
 ${insights.slice(0, 2).map(insight => `• ${insight.title}`).join('\n')}
 
 What would you like to explore first?`;
-  };
+  }; */}
 
   const handleSendMessage = async () => {
-    if (!input.trim()) return;
+    const userMessageText = input.trim();
+    if (!userMessageText) return;
 
-    const userMessage: ChatMessage = {
-      id: Date.now().toString(),
-      type: 'user',
-      content: input,
-      timestamp: new Date()
-    };
+    const userMessage: ChatMessage = {
+      id: Date.now().toString(),
+      type: 'user',
+      content: userMessageText,
+      timestamp: new Date()
+    };
 
-    setMessages(prev => [...prev, userMessage]);
-    const currentInput = input;
-    setInput('');
-    setIsLoading(true);
+    // 1. Add user message and reset input/loading state
+    setMessages(prev => [...prev, userMessage]);
+    setInput('');
+    setIsLoading(true);
 
-    // Simulate realistic AI response time
-    setTimeout(() => {
-      const aiResponse = generateAIResponse(currentInput, data);
-      
-      const aiMessage: ChatMessage = {
-        id: (Date.now() + 1).toString(),
-        type: 'ai',
-        content: aiResponse,
-        timestamp: new Date()
-      };
+    try {
+      // 2. POST the user message to the backend endpoint
+      const res = await fetch('http://localhost:4000/api/messages', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        // Send the raw user text to the server for conversation history
+        body: JSON.stringify({ text: userMessageText }), 
+      });
 
-      setMessages(prev => [...prev, aiMessage]);
-      setIsLoading(false);
-    }, 1000 + Math.random() * 1000); // 1-2 second delay for realism
-  };
+      if (!res.ok) {
+        throw new Error("AI Server failed to provide a valid response.");
+      }
+      
+      const result = await res.json();
+      
+      // 3. Create the AI message object
+      const aiMessage: ChatMessage = {
+        id: (Date.now() + 1).toString(),
+        type: 'ai',
+        // The server returns { text: "..." }
+        content: result.text || 'Error: Received empty response from AI.', 
+        timestamp: new Date()
+      };
+
+      // 4. Add AI response to history
+      setMessages(prev => [...prev, aiMessage]);
+
+    } catch (error) {
+      console.error("API Call Error:", error);
+      // Error Handling: Provide a user-friendly message
+      setMessages(prev => [
+        ...prev, 
+        { 
+          id: (Date.now() + 1).toString(),
+          type: 'ai', 
+          content: "I'm having trouble connecting to the analysis server. Please ensure your backend is running on port 4000.",
+          timestamp: new Date()
+        }
+      ]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
     <Card className="h-[600px] flex flex-col">
