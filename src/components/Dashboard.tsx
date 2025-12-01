@@ -5,7 +5,7 @@
 // This is the main dashboard that displays after data is uploaded
 // Students will enhance this component throughout weeks 4-10
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import { RefreshCw, Download, BarChart3, PieChart, LineChart, Table, MessageCircle, FileText, Image } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -37,26 +37,29 @@ const Dashboard = ({ data, fileName, onReset }: DashboardProps) => {
   const [activeTab, setActiveTab] = useState('overview');
   
   // 🔧 WEEK 4: Add data processing state here
-  // Example: const [filteredData, setFilteredData] = useState(data);
+  const [filteredData, setFilteredData] = useState(data);
   
   // 🔧 WEEK 5: Add file handling state here
-  // Example: const [exportFormat, setExportFormat] = useState('csv');
+  const [exportFormat, setExportFormat] = useState('csv');
   
   // 🔧 WEEK 6: Add chart customization state here
-  // Example: const [chartConfig, setChartConfig] = useState({});
+  const [chartConfig, setChartConfig] = useState({});
   
   // 🔧 WEEK 7: Add API integration state here
-  // Example: const [externalData, setExternalData] = useState([]);
+  const [externalData, setExternalData] = useState([]);
   
   // 🔧 WEEK 8: Add personal analytics state here
-  // Example: const [personalInsights, setPersonalInsights] = useState([]);
+  const [personalInsights, setPersonalInsights] = useState([]);
   
   // 🔧 WEEK 9: Add AI insights state here
-  // Example: const [aiGeneratedInsights, setAiGeneratedInsights] = useState([]);
+  const [aiGeneratedInsights, setAiGeneratedInsights] = useState([]);
 
   // 📊 Computed values - these recalculate when data changes
   const summary = useMemo(() => getDataSummary(data), [data]);
   const insights = useMemo(() => generateDataInsights(data), [data]);
+
+  const renderCountRef = useRef(0);
+  renderCountRef.current = renderCountRef.current + 1;
 
   // Enhanced export functionality
   const handleExportCSV = () => {
@@ -134,6 +137,7 @@ ${Object.entries(summary.columnTypes)
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
           <h2 className="text-3xl font-bold text-gray-900">Data Analysis Dashboard</h2>
+          <div className="text-sm text-yellow-300 mt-1">Dashboard Render Count: {renderCountRef.current}</div>
           <div className="flex items-center gap-4 text-sm text-gray-600 mt-1">
             <span className="flex items-center gap-1">
               <FileText className="h-4 w-4" />

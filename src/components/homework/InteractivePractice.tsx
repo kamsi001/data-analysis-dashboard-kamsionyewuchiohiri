@@ -104,7 +104,7 @@ const InteractivePractice = () => {
               onClick={() => setBgColor('lightcoral')} 
               className="px-3 py-2 bg-red-200 hover:bg-red-300 hover:scale-105 transition-all duration-200 rounded"
             >
-              Red {'🏆'}
+              Red
             </button>
             <button 
               onClick={() => setBgColor('white')} 

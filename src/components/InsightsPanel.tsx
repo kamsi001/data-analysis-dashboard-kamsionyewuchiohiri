@@ -5,6 +5,8 @@ import { DataInsight, DataRow } from "@/types/data";
 import { Button } from "./ui/button";
 import { useState } from "react";
 
+import InsightSkeleton from './InsightSkeleton';
+
 // 📊 Week 4-5: Smart Data Insights - Bringing Your Data to Life
 // Students - Transform raw data into meaningful stories! This component showcases professional data presentation patterns.
 //
@@ -89,26 +91,39 @@ const InsightsPanel = ({
 	};
 
 	const handleGenerateInsight = () => {
-		setIsLoading(true);
-		fetch("/api/server/insight", {
-			method: "POST",
-			headers: { "Content-Type": "application/json" },
-			body: JSON.stringify({
-				prompt: `Talk like a scottish pirate and be concise and generate insights for the following dataset: ${JSON.stringify(data)}`,
-			}),
-		})
-			.then((res) => res.json())
-			.then((data) => {
-				console.log(data);
-				setAiInsight(data);
-			})
-			.catch((err) => {
-				console.error(err);
-			})
-			.finally(() => {
-				setIsLoading(false);
-			});
-	};
+       setIsLoading(true);
+       fetch('http://localhost:4000/insight', { 
+           method: "POST",
+           headers: { "Content-Type": "application/json" },
+           body: JSON.stringify({
+               // Using your suggested prompt and dataset
+               prompt: `Talk like a data analyticist and be concise and generate insights for the following dataset: ${JSON.stringify(data)}`,
+           }),
+       })
+           .then((res) => {
+               if (!res.ok) {
+                   throw new Error("Server or AI call failed.");
+               }
+               return res.json();
+           })
+           .then((result) => {
+               console.log(result);
+               // Your server returns { insight: text }, so we set the summary.
+               // This will be updated for the Bonus Challenge later.
+               setAiInsight({ summary: result.insight, anomalies: [] }); 
+           })
+           .catch((err) => {
+               console.error("Error generating insight:", err);
+               // Error Handling: Set a descriptive error message in the summary
+               setAiInsight({ 
+                   summary: `The AI server may be down. Check your network and backend logs and try again.`,
+                   anomalies: [] 
+               });
+           })
+           .finally(() => {
+               setIsLoading(false);
+           });
+    };
 
 	// 🟢 EASY - Week 3: Empty State Handling
 	// TODO: Students - Always handle empty states gracefully
@@ -153,139 +168,163 @@ const InsightsPanel = ({
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<Button onClick={handleGenerateInsight} disabled={isLoading}>
-					{isLoading ? "Generating..." : "Generate AI Insight"}
-				</Button>
-				{aiInsight && (
-					<div className="my-4 border rounded-lg p-4 hover:bg-gray-50 transition-colors">
-						<h4 className="font-medium text-gray-900 mb-1">AI Insight</h4>
-						<p className="text-sm text-gray-600 mb-2 text-balance">
-							{aiInsight.summary}
-						</p>
-						<ul className="list-disc list-inside text-sm text-gray-600 mb-2 text-balance">
-							{aiInsight.anomalies.map((anomaly) => (
-								<li key={anomaly}>{anomaly}</li>
-							))}
-						</ul>
-					</div>
-				)}
-				<div className="space-y-4">
-					{/* 🟡 MEDIUM - Week 4: Dynamic List Rendering */}
-					{/* TODO: Students - Understand array mapping and complex layouts */}
-					{/* 
-          What's happening here:
-          - We have an array of insights
-          - We want to display each insight as a card
-          - We use the .map() function to transform each insight into JSX
-          - Each insight gets its own card with icon, title, description, etc.
-          
-          Why use .map() instead of writing each card manually?
-          - Dynamic: Works with any number of insights
-          - Maintainable: Change the layout once, applies to all insights
-          - Scalable: Can handle 10 insights or 1000 insights
-          
-          The 'key' prop is important for React's performance optimization
-          */}
-					{insights.map((insight, index) => (
-						<div
-							key={index}
-							className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
-						>
-							{/* TODO: Week 4 - Add click handler to expand insight details */}
-							<div className="flex items-start justify-between gap-3">
-								<div className="flex items-start gap-3 flex-1">
-									{/* 🟢 EASY - Week 3: Dynamic Icon and Styling */}
-									{/* Using our helper functions to get the right icon and colors */}
-									<div
-										className={`p-2 rounded-full ${getInsightColor(insight.type)}`}
-									>
-										{getInsightIcon(insight.type)}
-									</div>
-									<div className="flex-1">
-										<h4 className="font-medium text-gray-900 mb-1">
-											{insight.title}
-										</h4>
-										<p className="text-sm text-gray-600 mb-2">
-											{insight.description}
-										</p>
+				{/* Button Implementation and Loading State */}
+                <Button 
+                    onClick={handleGenerateInsight} 
+                    disabled={isLoading || data.length === 0} // Disable if loading or no data
+                    className="mb-4" // Add margin for spacing
+                >
+                    {isLoading ? "Generating AI Insight..." : "Generate AI Insight"} 
+                </Button>
 
-										{/* 🟡 MEDIUM - Week 4: Conditional Rendering */}
-										{/* TODO: Students - When and why do we use conditional rendering? */}
-										{/* 
-                    What's happening here:
-                    - Not all insights have a 'value' field
-                    - We only want to show the badge if there IS a value
-                    - The && operator means "if insight.value exists, then show the badge"
-                    
-                    Why conditional rendering?
-                    - Prevents showing empty or undefined values
-                    - Makes the UI cleaner and more professional
-                    - Avoids layout issues with missing data
-                    
-                    Try this: What happens if you remove the conditional check?
-                    */}
-										{insight.value && (
-											<Badge variant="secondary" className="text-xs">
-												{insight.value}
-											</Badge>
-										)}
+				{isLoading && (
+                    <div className="mt-4">
+                        <InsightSkeleton /> 
+                    </div>
+                )}
 
-										{/* TODO: Week 5 - Add action buttons (explore, dismiss, share) */}
+                {/* Display the AI Insight (Show only if aiInsight exists) */}
+                {aiInsight && !isLoading && (
+                    <div className={`my-4 border rounded-lg p-4 transition-colors ${aiInsight.anomalies.length > 0 ? 'bg-yellow-50 border-yellow-300' : 'bg-green-50 border-green-300'}`}>
+                        <h4 className="font-medium text-gray-900 mb-1">
+                            {aiInsight.anomalies.length > 0 ? 'AI Anomaly Report' : 'AI Summary'}
+                        </h4>
+                        <p className="text-sm text-gray-700 mb-2 text-balance">
+                            {aiInsight.summary}
+                        </p>
+                        {/* <ul> for anomalies only shows up if we implement the Bonus Challenge */}
+                        {aiInsight.anomalies.length > 0 && (
+                            <div className="mt-2 text-sm text-yellow-800 font-semibold">
+                                <AlertTriangle className="h-4 w-4 inline-block mr-1" /> Anomalies:
+                            </div>
+                        )}
+                        <ul className="list-disc list-inside text-sm text-gray-600 pl-4">
+                            {aiInsight.anomalies.map((anomaly, i) => (
+                                <li key={i}>{anomaly}</li>
+                            ))}
+                        </ul>
+                    </div>
+                )}
+
+				{!isLoading && (
+					<div className="space-y-4">
+						{/* 🟡 MEDIUM - Week 4: Dynamic List Rendering */}
+						{/* TODO: Students - Understand array mapping and complex layouts */}
+						{/* 
+			What's happening here:
+			- We have an array of insights
+			- We want to display each insight as a card
+			- We use the .map() function to transform each insight into JSX
+			- Each insight gets its own card with icon, title, description, etc.
+			
+			Why use .map() instead of writing each card manually?
+			- Dynamic: Works with any number of insights
+			- Maintainable: Change the layout once, applies to all insights
+			- Scalable: Can handle 10 insights or 1000 insights
+			
+			The 'key' prop is important for React's performance optimization
+			*/}
+						{insights.map((insight, index) => (
+							<div
+								key={index}
+								className="border rounded-lg p-4 hover:bg-gray-50 transition-colors"
+							>
+								{/* TODO: Week 4 - Add click handler to expand insight details */}
+								<div className="flex items-start justify-between gap-3">
+									<div className="flex items-start gap-3 flex-1">
+										{/* 🟢 EASY - Week 3: Dynamic Icon and Styling */}
+										{/* Using our helper functions to get the right icon and colors */}
+										<div
+											className={`p-2 rounded-full ${getInsightColor(insight.type)}`}
+										>
+											{getInsightIcon(insight.type)}
+										</div>
+										<div className="flex-1">
+											<h4 className="font-medium text-gray-900 mb-1">
+												{insight.title}
+											</h4>
+											<p className="text-sm text-gray-600 mb-2">
+												{insight.description}
+											</p>
+
+											{/* 🟡 MEDIUM - Week 4: Conditional Rendering */}
+											{/* TODO: Students - When and why do we use conditional rendering? */}
+											{/* 
+						What's happening here:
+						- Not all insights have a 'value' field
+						- We only want to show the badge if there IS a value
+						- The && operator means "if insight.value exists, then show the badge"
+						
+						Why conditional rendering?
+						- Prevents showing empty or undefined values
+						- Makes the UI cleaner and more professional
+						- Avoids layout issues with missing data
+						
+						Try this: What happens if you remove the conditional check?
+						*/}
+											{insight.value && (
+												<Badge variant="secondary" className="text-xs">
+													{insight.value}
+												</Badge>
+											)}
+
+											{/* TODO: Week 5 - Add action buttons (explore, dismiss, share) */}
+										</div>
 									</div>
+
+									{/* 🟡 MEDIUM - Week 4: Confidence Score Display */}
+									{/* TODO: Students - How do confidence scores help users trust insights? */}
+									{/* 
+					What's happening here:
+					- AI-generated insights have confidence scores (0-1)
+					- We convert to percentage (0.85 becomes 85%)
+					- We round to avoid showing decimals like 84.7%
+					
+					Why show confidence scores?
+					- Helps users understand how reliable the insight is
+					- Builds trust in AI-generated content
+					- Lets users prioritize which insights to act on
+					
+					Real-world example: Weather apps show confidence in forecasts
+					*/}
+									{insight.confidence && (
+										<Badge variant="outline" className="text-xs">
+											{insight.confidence} confidence
+										</Badge>
+									)}
 								</div>
 
-								{/* 🟡 MEDIUM - Week 4: Confidence Score Display */}
-								{/* TODO: Students - How do confidence scores help users trust insights? */}
-								{/* 
-                What's happening here:
-                - AI-generated insights have confidence scores (0-1)
-                - We convert to percentage (0.85 becomes 85%)
-                - We round to avoid showing decimals like 84.7%
-                
-                Why show confidence scores?
-                - Helps users understand how reliable the insight is
-                - Builds trust in AI-generated content
-                - Lets users prioritize which insights to act on
-                
-                Real-world example: Weather apps show confidence in forecasts
-                */}
-								{insight.confidence && (
-									<Badge variant="outline" className="text-xs">
-										{insight.confidence} confidence
-									</Badge>
-								)}
+								{/* TODO: Week 5 - Add expandable details section */}
+								{/* TODO: Week 6 - Add related charts or visualizations */}
 							</div>
+						))}
 
-							{/* TODO: Week 5 - Add expandable details section */}
-							{/* TODO: Week 6 - Add related charts or visualizations */}
-						</div>
-					))}
-
-					{/* 🟢 EASY - Week 4: Pagination/Truncation Logic */}
-					{/* TODO: Students - Understand user experience for long lists */}
-					{/* 
-          What's happening here:
-          - If there are more than 4 insights and we're not showing all
-          - We display a message about how many more are available
-          - This prevents the interface from becoming overwhelming
-          
-          Why limit what we show?
-          - Too much information can be overwhelming
-          - Keeps the interface clean and focused
-          - Encourages users to explore more deliberately
-          
-          Real-world example: Google shows 10 results per page, not 1000
-          */}
-					{!showAll && insights.length > 4 && (
-						<div className="text-center pt-4">
-							<p className="text-sm text-gray-500">
-								{insights.length - 4} more insights available in the Insights
-								tab
-							</p>
-							{/* TODO: Week 5 - Add "Show More" button */}
-						</div>
-					)}
-				</div>
+						{/* 🟢 EASY - Week 4: Pagination/Truncation Logic */}
+						{/* TODO: Students - Understand user experience for long lists */}
+						{/* 
+			What's happening here:
+			- If there are more than 4 insights and we're not showing all
+			- We display a message about how many more are available
+			- This prevents the interface from becoming overwhelming
+			
+			Why limit what we show?
+			- Too much information can be overwhelming
+			- Keeps the interface clean and focused
+			- Encourages users to explore more deliberately
+			
+			Real-world example: Google shows 10 results per page, not 1000
+			*/}
+						{!showAll && insights.length > 4 && (
+							<div className="text-center pt-4">
+								<p className="text-sm text-gray-500">
+									{insights.length - 4} more insights available in the Insights
+									tab
+								</p>
+								{/* TODO: Week 5 - Add "Show More" button */}
+							</div>
+						)}
+					</div>
+				)}
 			</CardContent>
 		</Card>
 	);

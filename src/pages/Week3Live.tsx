@@ -1,4 +1,5 @@
-import Week3LiveDemo from '../components/Demos/Week3LiveDemo';
+import Week3LiveDemo from '@/components/Week3LiveDemo';
+import NameInput from "@/components/NameInput";
 
 const Week3Live = () => {
   return (
@@ -13,9 +14,12 @@ const Week3Live = () => {
           </p>
           <p className="text-gray-500 mt-2">
             Try the NameInput demo below. Focus on controlled components, user input, and validation!
+            <div className="mb-8">
+              <Week3LiveDemo />
+            </div>
           </p>
         </div>
-        <Week3LiveDemo />
+        {/* <Week3LiveDemo /> */}
       </div>
     </div>
   );

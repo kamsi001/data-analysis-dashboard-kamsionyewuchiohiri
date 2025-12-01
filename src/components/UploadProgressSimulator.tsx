@@ -39,7 +39,7 @@ const UploadProgressSimulator = () => {
   };
 
   const addProgress = () => {
-    // TODO: Add 25% to current progress
+    setProgress(prevProgress => Math.min(prevProgress + 25, 100));
   };
 
   return (
