@@ -107,69 +107,61 @@ const NameInput = () => {
         <CardTitle className="text-blue-600 text-3xl font-bold">FILL IN YOUR INFORMATION</CardTitle>
       </CardHeader>
       <CardContent className="space-y-4 p-4">
-        
-        {/* Landscape Grouping: Inputs side-by-side (Reduced vertical spacing) */}
-        <div className="grid md:grid-cols-3 gap-3">
-            
-            {/* 1. Name Input (Core 1) */}
-            <div className="space-y-1 md:col-span-1">
-                <label htmlFor="name-input" className="text-sm font-medium text-gray-700 block">Name (required)</label>
-                <Input
-                    id="name-input"
-                    placeholder="Enter your name"
-                    value={name}
-                    onChange={handleNameChange}
-                    aria-invalid={!!nameError}
-                    aria-describedby={nameError ? 'name-error-message' : undefined}
-                    className={nameError ? 'border-red-500' : 'border-gray-300'}
-                />
-                {nameError && <p id="name-error-message" className="text-red-500 text-xs mt-1">{nameError}</p>}
-                
-                {/* Bonus Feature: Show character count as user types */}
-                <p className="text-xs text-gray-500 pt-1">Characters: {name.length}</p>
-            </div>
+        
+        {/* Landscape Grouping: Inputs side-by-side (Reduced vertical spacing) */}
+        <div className="grid md:grid-cols-3 gap-3">
+            
+            {/* 1. Name Input (Core 1) */}
+            <div className="space-y-1 md:col-span-1">
+                <label htmlFor="name-input" className="text-sm font-medium text-gray-700 block">Name (required)</label>
+                <Input
+                    id="name-input"
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={handleNameChange}
+                    className={nameError ? 'border-red-500' : 'border-gray-300'}
+                />
+                {nameError && <p className="text-red-500 text-xs mt-1">{nameError}</p>}
+                
+                {/* Bonus Feature: Show character count as user types */}
+                <p className="text-xs text-gray-500 pt-1">Characters: {name.length}</p>
+            </div>
 
-            {/* 2. Email Input (Core 2) */}
-            <div className="space-y-1 md:col-span-1">
-                <label htmlFor="email-input" className="text-sm font-medium text-gray-700 block">Email (optional)</label>
-                <Input
-                    id="email-input"
-                    type="email"
-                    placeholder="Enter your email"
-                    value={email}
-                    onChange={handleEmailChange}
-                    aria-invalid={!!emailError}
-                    aria-describedby={emailError ? 'email-error-message' : undefined}
-                    className={emailError ? 'border-red-500' : 'border-gray-300'}
-                />
-                {emailError && <p id="email-error-message" className="text-red-500 text-xs mt-1">{emailError}</p>}
-            </div>
+            {/* 2. Email Input (Core 2) */}
+            <div className="space-y-1 md:col-span-1">
+                <label htmlFor="email-input" className="text-sm font-medium text-gray-700 block">Email (optional)</label>
+                <Input
+                    id="email-input"
+                    type="email"
+                    placeholder="Enter your email"
+                    value={email}
+                    onChange={handleEmailChange}
+                    className={emailError ? 'border-red-500' : 'border-gray-300'}
+                />
+                {emailError && <p className="text-red-500 text-xs mt-1">{emailError}</p>}
+            </div>
 
-            {/* Bonus Feature: Favorite Color Dropdown (Bonus) */}
-            <div className="space-y-1 md:col-span-1">
-                <label htmlFor="color-select" className="text-sm font-medium text-gray-700 block">Favorite Color</label>
-                <Select onValueChange={setColor} value={color}>
-                    <SelectTrigger id="color-select" className="border-gray-300">
-                        <SelectValue placeholder="— Select Color —" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {COLOR_OPTIONS.map(opt => (
-                            <SelectItem key={opt.value} value={opt.value}>
-                                {opt.label}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
-        </div>
+            {/* Bonus Feature: Favorite Color Dropdown (Bonus) */}
+            <div className="space-y-1 md:col-span-1">
+                <label htmlFor="color-select" className="text-sm font-medium text-gray-700 block">Favorite Color</label>
+                <Select onValueChange={setColor} value={color}>
+                    <SelectTrigger id="color-select" className="border-gray-300">
+                        <SelectValue placeholder="— Select Color —" />
+                    </SelectTrigger>
+                    <SelectContent>
+                        {COLOR_OPTIONS.map(opt => (
+                            <SelectItem key={opt.value} value={opt.value}>
+                                {opt.label}
+                            </SelectItem>
+                        ))}
+                    </SelectContent>
+                </Select>
+            </div>
+        </div>
 
         {/* Greeting Message (Core 1) - Full Width */}
         {greeting && (
-          <p 
-            role="status" 
-            aria-live="polite"
-            className="text-green-600 font-medium p-3 bg-green-50 border border-green-200 rounded"
-          >
+          <p className="text-green-600 font-medium p-3 bg-green-50 border border-green-200 rounded">
             {greeting}
           </p>
         )}
